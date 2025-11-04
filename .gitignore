@@ -1,0 +1,22 @@
+/node_modules/*
+.cursor
+.eslintcache
+/dist/*
+/config/config.json
+/src/config/env/local.env
+/logs/*
+.env
+.idea
+*.sh
+docker-compose.yml
+credentials.json
+data.json
+stage-user.sh
+*.pem
+*.log
+*.todo
+TODO
+
+# Test coverage
+coverage/
+*.lcov
