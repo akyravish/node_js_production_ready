@@ -15,7 +15,7 @@
 
 import { prisma } from '../lib';
 import { DatabaseError } from '../lib/errors';
-import { User } from '@prisma/client';
+import { MasterAccount as User } from '@prisma/client';
 
 /**
  * Create user input data type
