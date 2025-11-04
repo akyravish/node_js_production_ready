@@ -1,7 +1,7 @@
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express from 'express';
+import express, { CookieOptions } from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import { config } from './config';
@@ -25,7 +25,7 @@ async function main() {
   if (config.nodeEnv === 'production') {
     app.enable('trust proxy');
     app.use((req, res, next) => {
-      const proto = (req.headers['x-forwarded-proto'] as string) || (req as any).protocol;
+      const proto = (req.headers['x-forwarded-proto'] as string) || req.protocol;
       if (proto !== 'https') {
         // Validate host header to prevent host header injection
         const host = req.headers.host;
@@ -105,14 +105,13 @@ async function main() {
   // Cookie hardening: set secure defaults for all cookies set by the app
   app.use((req, res, next) => {
     const originalCookie = res.cookie.bind(res);
-    res.cookie = (name: string, value: any, options: any = {}) => {
-      const hardened = {
+    res.cookie = (name: string, value: unknown, options: CookieOptions = {}) => {
+      return originalCookie(name, value, {
         httpOnly: true,
-        sameSite: 'strict',
-        secure: config.nodeEnv === 'production',
+        sameSite: 'lax',
+        secure: config.nodeEnv === 'production' ? true : false,
         ...options,
-      };
-      return originalCookie(name, value, hardened);
+      });
     };
     next();
   });
